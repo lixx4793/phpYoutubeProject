@@ -1,0 +1,49 @@
+.container-row {
+  width: 100%;
+  height: 15%;
+}
+
+.container {
+   width: 85%;
+     height: 20%;
+   display:inline;
+}
+
+.blk  {
+   display:inline;
+}
+
+ .blk img {
+  filter: blur(0.7px);
+  height: 200px;
+  transition: 0.5s;
+}
+
+
+
+.blk img:hover {
+  filter: blur(0px);
+  transform: scale(1.1);
+}
+
+.container-right {
+  padding-top: 15px;
+
+}
+span {
+  padding-right: 15px;
+}
+
+.span2 {
+  padding-left: 5%;
+}
+
+.inputL {
+  width: 1%;
+  display: inline;
+}
+
+.inputL2 {
+  width: 5%;
+  display: inline;
+}

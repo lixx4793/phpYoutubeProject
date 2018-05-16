@@ -11,7 +11,7 @@
         ),
     );
     $result = array();
-    $section_Id =$searchingArray['section_id'];
+    $section_Id = $searchingArray['section_id'];
     $name = $searchingArray['name'];
     $author = $searchingArray['author'];
     $publishedTime = $searchingArray['year'];
@@ -46,7 +46,7 @@
     {
       $query .= $name." gameplay";
     }
-    else if($section_id == 8)     // For podcast query = name + specify
+    else if($section_Id == 8)     // For podcast query = name + specify
     {
       $query .= $name." podcast";
     }
@@ -62,6 +62,7 @@
     //  Sent request to youtube api
     $max = 5;
     //  format correction
+    if($query == " ") return 0;
     $query = str_replace(" ", "%20", $query);
     $url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=".
     $query."&maxResults=".$max.
@@ -74,7 +75,9 @@
     //  push the link to result array
     foreach($response["items"] as $video)
     {
+      // array format videoLink + img, videoLink + img
       array_push($result, $videoLink.$video["id"]["videoId"]);
+      array_push($result, $video["snippet"]["thumbnails"]["high"]["url"]);
     }
     return $result;
   }
