@@ -1,0 +1,176 @@
+.container-row {
+  margin: auto;
+  width: 100%;
+  height: 15%;
+  text-align:center
+}
+
+
+.container {
+   width: 85%;
+   height: 20%;
+   display:inline;
+}
+
+.blk {
+  display:inline;
+  height: 200px;
+}
+
+
+.container-image {
+    display: inline;
+    position: relative;
+}
+
+  .container-image img {
+    display: inline;
+  opacity: 1;
+  filter: blur(0.5px);
+  border-radius: 10%;
+  border: 1px solid #add;
+  padding: 5px;
+  height: 250px;
+  transition: .5s;
+  /* backface-visibility: hidden; */
+}
+
+.middle {
+  display: inline;
+  transition: .7s;
+  opacity: 0;
+  position: absolute;
+  width: 80%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.text2 {
+  margin: auto;
+  margin-top: 3%;
+  width: 80%;
+
+
+}
+
+.info {
+  position: absolute;
+  display: inline;
+  top: 30%;
+  left: 0;
+  padding: 8px;
+  width: 100%;
+}
+
+
+.text {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 1.3em;
+  padding: 16px 32px;
+}
+.container-image:hover .image {
+  opacity: 0.3;
+}
+
+.container-image:hover .middle {
+  opacity: 0.8;
+}
+
+
+.blk :hover {
+  filter: blur(0px);
+  transform: scale(1.1);
+}
+
+.container-right {
+  text-align: left;
+  padding-top: 15px;
+  padding-left: 10%;
+}
+
+.container-right1 {
+  padding-left: 10%;
+  text-align: left;
+  margin-top: 5%;
+}
+
+span {
+  padding-right: 15px;
+}
+
+.span2 {
+  padding-left: 5%;
+}
+
+.inputL {
+  width: 1%;
+  display: inline;
+}
+
+.inputL2 {
+  width: 5%;
+  display: inline;
+}
+
+
+.head
+{
+  width: 100%;
+  height: 20%;
+}
+
+.category {
+  opacity: 0.7;
+  background-color:#42f4df;
+  display: inline;
+  padding: 10px;
+  border-radius: 10%;
+  border: 1px solid #add;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.category:hover {
+  opacity: 1;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+.pageSection {
+  padding-left: 8%;
+  margin-top: 4em;
+}
+
+#currentPage {
+  background-color:#f48f42;
+}
+
+.page {
+  margin-left: 15px;
+  width: 3%;
+  height: 28px;
+  background: #42f4df;
+  border-radius: 10%;
+  border: 1px solid #add;
+  margin-bottom: 1%;
+}
+
+.toolbar {
+  text-align: center;
+  margin-left: 10%;
+  margin-top: 1%;
+}
+
+.filter {
+  color: white;
+   font-family: "Lucida Grande", Geneva, Verdana, Arial, Helvetica, sans-serif;
+   font-weight: bold;
+  background: black;
+  border-radius: 10%;
+  border: 1px solid #add;
+  width: 3%;
+  height: 28px;
+}

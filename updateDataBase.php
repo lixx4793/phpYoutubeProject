@@ -20,5 +20,10 @@ if(isset($_GET["pid"]) && isset($_GET["index"]))
     echo updateURL($publishedid, $index, $divName);
   }
 }
+else if(isset($_GET["status"]))
+{
+  require ("databaseFunc.php");
+  echo updateFlag($_GET["status"], $_GET["publishedid"]);
+}
 
   ?>

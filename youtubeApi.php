@@ -60,7 +60,7 @@
     }
 
     //  Sent request to youtube api
-    $max = 5;
+    $max = 10;
     //  format correction
     if($query == " ") return 0;
     $query = str_replace(" ", "%20", $query);
@@ -75,9 +75,27 @@
     //  push the link to result array
     foreach($response["items"] as $video)
     {
+      if($count <= 5)
+      {
       // array format videoLink + img, videoLink + img
+      $chan = str_replace('"', "", $video["snippet"]["channelTitle"]);
+      $tit = str_replace('"', "", $video["snippet"]["title"]);
       array_push($result, $videoLink.$video["id"]["videoId"]);
       array_push($result, $video["snippet"]["thumbnails"]["high"]["url"]);
+      // CommentOut to use original version
+      array_push($result, $chan);
+      array_push($result, $tit);
+      $count++;
+      }
+    }
+    if($count <= 5)
+    {
+      array_push($result, " ");
+      array_push($result, " ");
+      // CommentOut to use original version
+      array_push($result, " ");
+      array_push($result, " ");
+      $count++;
     }
     return $result;
   }
