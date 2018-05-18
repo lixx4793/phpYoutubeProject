@@ -1,5 +1,5 @@
 <?php
-  define("KEY", "AIzaSyAnLOcYLEvkTBqoB7hIrMkCV3-ocGIu3CQ");
+  define("KEY", "");  //DEFINE YOUR KEY
 
   function getUrls($searchingArray)
   {
