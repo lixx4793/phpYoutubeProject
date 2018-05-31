@@ -9,7 +9,7 @@ $selected = mysqli_select_db($conn, $db_nameL)
 
 $section = 1;     // Defalut section is movie
 $page = 1;        //Defalut page is 1
-$resultPerPage = 15;  // How many item will be displayed in one page
+$resultPerPage = 50;  // How many item will be displayed in one page
 $filter = 1;    // Status filter
 
 
@@ -33,17 +33,22 @@ $max = $page * $resultPerPage;
 
 if(isset($_GET['searching']))
 {
-  $sql = "SELECT * from `videos2` where `publishedid` = " . ($_GET['searching']) . ";";
+  $sql = "SELECT * from `videoStore` where `publishedid` = " . ($_GET['searching']) . ";";
 }
 else
 {
-  $sql = "SELECT `publishedid` from `videos2` where `section_id` = ". $section . " and `flag` = " . $filter ." order by instances DESC";
+  $sql = "SELECT `publishedid`, `title` from `videoStore` where `section_id` = ". $section . " and `flag` = " . $filter ." order by instances DESC";
 }
 $count = 1;
 $sqlResult = mysqli_query($conn, $sql);
 if(!$sqlResult)
 {
-  $htmlBody = "<font size = 10 color = 'red'>invalid input of searching, only allowed number</font>";
+  $sql2 = " SELECT * from `videoStore` where `title` LIKE " . '"%' .  $_GET['searching'] . '%"' . " LIMIT 5";
+  $sqlResult = mysqli_query($conn, $sql2);
+}
+if(!$sqlResult)
+{
+  $htmlBody = "<font size = 10 color = 'red'>Sorry I can not find the item you searching</font>";
 }
 else
 {
@@ -65,7 +70,7 @@ END;
     else
     {
       $pageSelector .= <<<END
-      <input type = "button"  class = "page" value = $p onclick ="updatePage($p, $section)" > </input>
+      <input type = "button"  class = "page" value = $p onclick ="updatePage($p, $section)"> </input>
 END;
     }
   }
@@ -77,7 +82,7 @@ END;
     <input type = "button"  value = On  class = "filter" onclick = "chooseFilter(1, $page, $section)"></input>
     <input type = "button"  value = OFF class = "filter" onclick = "chooseFilter(0, $page, $section)"></input> <font> <b> - Filter Status </b></font>
       <input type = "text" placeholder="Search By Item Id or Item Name" style = "margin-left: 18%;width:30%;border: 3px solid" id = "sea"> </input>
-      <input type = "button" value = "Search" class = "filter" style="width:10%" onclick = "searchId('sea')"></input>
+      <input type = "button" value = "Search" class = "filter" style="width:10%" onclick = "searchId('sea', $filter)"></input>
     </div>
 END;
 
@@ -126,9 +131,7 @@ END;
       $count++;
       continue;
     }
-    $htmlBody .= <<<END
-          <div class = "container-row" id = "container$count" >
-END;
+
     // make sure the video is not been shown before
     if(in_array($row['publishedid'], $pidArray))
     {
@@ -136,9 +139,14 @@ END;
     }
     else
     {
+
+        $htmlBody .= <<<END
+          <div class = "container-row" id = "container$count" >
+          <div style = "margin-bottom: 1em"><font size = "5" color = "red" ><b>Title:   "{$row['title']}"</b></font></br></div>
+END;
         // push to pidArray, and generate html content to htmlbody
         array_push($pidArray, $row['publishedid']);
-        $sqlPid = "SELECT * FROM `videos2` WHERE `publishedid` = " . $row['publishedid'] . " order by `priority` ASC;";
+        $sqlPid = "SELECT * FROM `videoStore` WHERE `publishedid` = " . $row['publishedid'] . " order by `priority` ASC;";
         $search = mysqli_query($conn, $sqlPid);
         for($i = 0; $i < 5; $i++)
         {
@@ -152,9 +160,6 @@ END;
               <a href = "{$sameItem['videoUrl']}" class="html5lightbox">
                 <div class="container-image">
                   <img src="{$sameItem['imgUrl']}" width = "16%" alt="image lost">
-                  <div class="middle">
-                    <div class="text">  {$sameItem['title']}   <br><br>channel: {$sameItem['channel']}</div>
-                  </div>
                   <div class = "info">
                     <div class = "text2">
                     <font size = "2" color = "black">{$sameItem['videoTitle']}</font><br>
@@ -168,7 +173,7 @@ END;
         }
 
       // Determine the status of item
-        if($filter == 1)
+        if($sameItem['flag'] == 1)
         {
           $StatusControl =<<<END
           <br>
@@ -194,7 +199,7 @@ END;
           </div>
 
           <div class = "container-right">
-            <span>Changing - Index:</span> <input type = "text" value = 0 class = "manuIndex"></input>
+            <span>Changing - Index:</span> <input type = "text" value = 1 class = "manuIndex"></input>
             <span class = "span2">Image URL:</span> <input type = "text" value = "" class = "manuImg" placeholder = "image URL"> </input>
             <span class = "span2">Video URL:<input type = "text" value ="" class = "manuVideo" placeholder = "Video URLs "> </input>
             <input type = "button" value = "modify"  class = "manuS"
@@ -228,8 +233,9 @@ END;
 
 <script>
 
-function searchId(divName)
+function searchId(divName, flag)
 {
+
   var div = document.getElementById(divName);
   window.location.href = "playGround.php?searching=" + div.value;
 }

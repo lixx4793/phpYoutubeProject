@@ -10,6 +10,10 @@
   GROUP BY publishedid
   ORDER BY count(*) DESC;";
 
+  // ********  Uncomment this line if the database is not been created
+  // echo createTable();
+
+
   $items = searchData($sql);
   echo insertData($items);
 ?>

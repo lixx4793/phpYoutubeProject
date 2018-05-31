@@ -1,4 +1,5 @@
 <?php
+ini_set('max_execution_time', 36000);
 if(isset($_GET["pid"]) && isset($_GET["index"]))
 {
   // This is userd to update manually

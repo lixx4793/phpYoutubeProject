@@ -1,6 +1,6 @@
 <?php
-  define("KEY", "");  //DEFINE YOUR KEY
-
+  define("KEY", "AIzaSyAnLOcYLEvkTBqoB7hIrMkCV3-ocGIu3CQ");
+  ini_set('max_execution_time', 36000);
   function getUrls($searchingArray)
   {
     //  SSL error handler for file_get_contents  function
@@ -68,16 +68,18 @@
     $query."&maxResults=".$max.
     "&type=video&key=".KEY;
     //  Read Json result returned and read through it
-    $contents = file_get_contents($url, false, stream_context_create($option));
+    if( ! ($contents = file_get_contents($url, false, stream_context_create($option))) ) return null;
     $response = json_decode($contents, true);
     $videoLink = "https://www.youtube.com/embed/";
     $count = 1;
     //  push the link to result array
+    if(!$response) return null;
     foreach($response["items"] as $video)
     {
       if($count <= 5)
       {
       // array format videoLink + img, videoLink + img
+      if(($video["snippet"]["title"]) == "" || ($video["snippet"]["title"]) == null) return null;
       $chan = str_replace('"', "", $video["snippet"]["channelTitle"]);
       $tit = str_replace('"', "", $video["snippet"]["title"]);
       array_push($result, $videoLink.$video["id"]["videoId"]);
@@ -90,11 +92,11 @@
     }
     if($count <= 5)
     {
-      array_push($result, " ");
-      array_push($result, " ");
+      array_push($result, "no resource");
+      array_push($result, "no resource");
       // CommentOut to use original version
-      array_push($result, " ");
-      array_push($result, " ");
+      array_push($result, "no resource");
+      array_push($result, "no resource");
       $count++;
     }
     return $result;

@@ -1,5 +1,6 @@
 <?php
 ini_set('display_errors', 'On');
+ini_set('max_execution_time', 36000);
 
 function searchData($sql)
 {
@@ -14,6 +15,29 @@ function searchData($sql)
   return $result;
 }
 
+
+function createTable()
+{
+  require ("db_config.php");
+  $dbhandle = mysqli_connect($hostname, $username, $password, $db_name)
+    or die("Unable to connect to Tribalist");
+  $selected = mysqli_select_db($dbhandle, $db_name)
+    or die("Could not select Fabric");
+  $sql = "CREATE TABLE videoStore ( publishedid int DEFAULT NULL,
+   videoUrl varchar(100) DEFAULT NULL, imgUrl varchar(100) DEFAULT NULL,
+   title varchar(100) DEFAULT NULL, channel varchar(100) DEFAULT NULL,
+   flag int DEFAULT 1, priority int DEFAULT 0, section_id int DEFAULT 0,
+    instances int DEFAULT 1, videoTitle varchar(100) DEFAULT NULL);";
+  $pass = mysqli_query($dbhandle, $sql);
+  if(!$pass) {
+    return "Unable to create the table".$dbhandle->error ;
+  }
+  else
+  {
+    return "the table is created Successfully";
+  }
+
+}
 
 
 function updateManu($pid, $index, $divName, $imgURL, $videoURL)
@@ -30,14 +54,14 @@ function updateManu($pid, $index, $divName, $imgURL, $videoURL)
     if($imgURL != "")
     {
       //update imgURL in index n
-      $sqlImg = "UPDATE `videos2` SET `imgUrl` = " . "'" . $imgURL . "'" . " WHERE `publishedid` = " . $pid . " and `priority` = " . $index .";";
+      $sqlImg = "UPDATE `videoStore` SET `imgUrl` = " . "'" . $imgURL . "'" . " WHERE `publishedid` = " . $pid . " and `priority` = " . $index .";";
       $pass = ($pass && mysqli_query($conn, $sqlImg));
       if(!$pass)  $error .= "Unable to update image url<br>";
     }
     if($videoURL != "")
     {
       // update video in index n
-      $sqlVideo = "UPDATE `videos2` SET `videoUrl` = " . "'" . $videoURL . "'" . " WHERE `publishedid` = " . $pid . " and `priority` = " . $index .";";
+      $sqlVideo = "UPDATE `videoStore` SET `videoUrl` = " . "'" . $videoURL . "'" . " WHERE `publishedid` = " . $pid . " and `priority` = " . $index .";";
       $pass = ($pass && mysqli_query($conn, $sqlVideo));
       if(!$pass) $error .= "Unable to update video url<br>";
     }
@@ -55,9 +79,9 @@ function updateURL($pid, $index, $divName)
   $selected = mysqli_select_db($conn, $db_nameL)
     or die("Could not select youtubevideos");
   // Change the priority with 1 and n
-  $P10 = "UPDATE `videos2` SET `priority` = -1 WHERE `priority` = 1 and `publishedid` =" . $pid . ";";
-  $Pn1 = "UPDATE `videos2` SET `priority` = 1 WHERE `priority` = " . $index . " and `publishedid` =" . $pid .";";
-  $P0n = "UPDATE `videos2` SET `priority` = " . $index . " WHERE `priority` = -1 and `publishedid` =" . $pid . ";";
+  $P10 = "UPDATE `videoStore` SET `priority` = -1 WHERE `priority` = 1 and `publishedid` =" . $pid . ";";
+  $Pn1 = "UPDATE `videoStore` SET `priority` = 1 WHERE `priority` = " . $index . " and `publishedid` =" . $pid .";";
+  $P0n = "UPDATE `videoStore` SET `priority` = " . $index . " WHERE `priority` = -1 and `publishedid` =" . $pid . ";";
   $error = "";
   if(!mysqli_query($conn, $P10)) $error .= "<font color = 'red' size ='3' > Unable to change priority 1 to -1 for: ". $pid . "</font><br>";
   if(!mysqli_query($conn, $Pn1)) $error .= "<font color = 'red' size ='3' > Unable to change priority ". $index . " to 1 for: ". $pid . "</font><br>";
@@ -92,12 +116,10 @@ function updateFlag($flag, $pid)
   {
     $flag = 1;
   }
-  $sql = "UPDATE `videos2` SET `flag` = " . $flag . " WHERE `publishedid` = " . $pid . ";";
+  $sql = "UPDATE `videoStore` SET `flag` = " . $flag . " WHERE `publishedid` = " . $pid . ";";
   $error ="";
   if(!mysqli_query($conn, $sql)) $error .= "Unable to change the status of " . $pid ;
   echo $error;
-
-
 }
 
 
@@ -117,13 +139,10 @@ function insertData($queryReturn)
     or die("Unable to connect to localDatabase");
   $selected = mysqli_select_db($dbhandle, $db_nameL)
     or die("Could not select youtubevideos");
-
   //  Go through query return
-  $count = 0;
   $record = "";
   while ($row = mysqli_fetch_array($queryReturn, MYSQLI_ASSOC))
   {
-    if($count > 500) break;
     $searchingArray = [
       "name" => $row['title'],
       "section_id" => $row['section_id'] ,
@@ -131,22 +150,22 @@ function insertData($queryReturn)
       "year" => $row["year"],
     ];
     // The element is not in table videos
-    $checkSql = "select title from videos2 where publishedid = ".$row['publishedid'];
+    if($row['title'] == "") continue;
+    $checkSql = "select title from videoStore where publishedid = " . $row['publishedid'];
     $flag = mysqli_fetch_array((mysqli_query($dbhandle, $checkSql)), MYSQLI_ASSOC);
 
-    if(!$flag['title'])
+    if(!$flag)
     {
       //  get url of the videos for this item.
       $urls = getUrls($searchingArray);
 
       //  If url array is empty, break the loop
-      if(!$urls || $urls == 0) continue;
-
+      if(!$urls || $urls ==  null) continue;
 
       //  insert values into database
       for( $order = 1; $order <= 5 ; $order++)
       {
-        $insertSql = "INSERT INTO `videos2` (`title`, `publishedid`, `section_id`, `instances`,
+        $insertSql = "INSERT INTO `videoStore` (`title`, `publishedid`, `section_id`, `instances`,
            `videoUrl`, `imgURL`, `priority`, `channel`, `videoTitle`) VALUES ". "(" . '"' . $row['title']. '"' ."," . $row['publishedid'].
            "," . $row['section_id'] . ", " . $row['instances'] . ", " . '"' . $urls[($order - 1) * 4] . '"' . "," .
            '"' . $urls[($order - 1) * 4 + 1] . '"' . "," . $order .  ", " . '"' . $urls[($order - 1) * 4 + 2] . '"' . ", " . '"' .
@@ -169,7 +188,6 @@ function insertData($queryReturn)
       $record .= "<font size='4' color='red'>" . "The movie" . " '" .
       $row['title'] . "' " . " is already existed, plz update manually" . "</font><br>";
     }
-   $count++;
  }
  $dbhandle->close();
  return $record;
