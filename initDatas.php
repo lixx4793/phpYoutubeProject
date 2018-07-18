@@ -1,5 +1,6 @@
 <?php
   require ("databaseFunc.php");
+  // SQL example relace your own sql. Will request data base on the value returned
   $sql = "select distinct movie_details_developments.title,year,studio,
   movie_details_developments.publishedid,movie_details_developments.section_id,
   section_name,count(*) as instances from CategoryListItem

@@ -1,5 +1,5 @@
 <?php
-  define("KEY", "AIzaSyAnLOcYLEvkTBqoB7hIrMkCV3-ocGIu3CQ");
+  define("KEY", "REPLACE YOUR KEY");
   ini_set('max_execution_time', 36000);
   function getUrls($searchingArray)
   {
